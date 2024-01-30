@@ -21,11 +21,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	"math"
 	"strconv"
 	"strings"
 
-	"github.com/davecgh/go-spew/spew"
+	"github.com/impzero/plane/math"
 )
 
 func main() {
@@ -37,13 +36,9 @@ func main() {
 	plane.ManualAssign(22, 6, 23)
 	plane.ManualAssign(2, 1, 99)
 	plane.ManualAssign(30, 6, 999)
-	fmt.Println("Printing new plane")
+
 	plane.Print()
 	plane.IsBalanced()
-
-	if _, err := plane.ManualAssign(30, 30, 2); err != nil {
-		panic(err)
-	}
 }
 
 type Plane struct {
@@ -102,38 +97,16 @@ func (p *Plane) IsBalanced() bool {
 				xDirection = 1
 			}
 
-			xCordinate := seat.Weight * (float64(i * yDirection))
-			yCordinate := seat.Weight * (float64(j * xDirection))
+			xCoordinate := seat.Weight * (float64(i * yDirection))
+			yCoordinate := seat.Weight * (float64(j * xDirection))
 
-			vectors = append(vectors, [2]float64{xCordinate, yCordinate})
+			vectors = append(vectors, [2]float64{xCoordinate, yCoordinate})
 		}
 	}
 
-	direction := calculateMeanDirection(vectors)
-	spew.Dump(direction)
+	_ = math.CalculateMeanDirection(vectors)
 
 	return false
-}
-
-func calculateMeanDirection(vectors [][2]float64) float64 {
-	sumX := 0.0
-	sumY := 0.0
-
-	for _, vector := range vectors {
-		sumX += vector[0]
-		sumY += vector[1]
-	}
-
-	// Calculate the mean direction
-	meanDirection := math.Atan2(sumY/float64(len(vectors)), sumX/float64(len(vectors)))
-
-	// Convert the angle from radians to degrees
-	meanDirectionDegrees := meanDirection * 180 / math.Pi
-
-	// Ensure the angle is between 0 and 360 degrees
-	meanDirectionDegrees = math.Mod(meanDirectionDegrees+360, 360)
-
-	return meanDirectionDegrees
 }
 
 func (p *Plane) ManualAssign(rowVal, columnVal int, weight float64) (Seat, error) {

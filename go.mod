@@ -1,4 +1,4 @@
-module github.com/impzero/balance
+module github.com/impzero/plane
 
 go 1.21.5
 
