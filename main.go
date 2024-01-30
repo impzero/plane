@@ -45,7 +45,9 @@ type Plane struct {
 	Name  string
 	Seats [][]Seat
 
-	unbalanceTolerance int
+	currentBalance
+	yBalanceTolerance float64
+	xBalanceTolerance float64
 }
 
 type Seat struct {
@@ -74,7 +76,8 @@ func NewPlane(name string, rows, columns int) Plane {
 		}
 	}
 
-	plane.unbalanceTolerance = rows * columns / 2
+	plane.yBalanceTolerance = 0.10 // 10% bias for length
+	plane.xBalanceTolerance = 0.05 // 5% bias for width - since planes are usually lengthier
 	return plane
 }
 
@@ -104,9 +107,7 @@ func (p *Plane) IsBalanced() bool {
 		}
 	}
 
-	_ = math.CalculateMeanDirection(vectors)
-
-	return false
+	return math.CalculateMeanDirection(vectors) > 30
 }
 
 func (p *Plane) ManualAssign(rowVal, columnVal int, weight float64) (Seat, error) {

@@ -18,3 +18,15 @@ func CalculateMeanDirection(vectors [][2]float64) float64 {
 	meanDirectionDegrees = math.Mod(meanDirectionDegrees+360, 360)
 	return meanDirectionDegrees
 }
+
+func GetVector(vectors [][2]float64) [2]float64 {
+	sumX := 0.0
+	sumY := 0.0
+
+	for _, vector := range vectors {
+		sumX += vector[0]
+		sumY += vector[1]
+	}
+
+	return [2]float64{sumX, sumY}
+}
