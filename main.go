@@ -21,7 +21,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"math"
 	"strconv"
 	"strings"
 
@@ -30,7 +29,7 @@ import (
 )
 
 func main() {
-	plane := NewPlane("Boeing 747", 30, 6)
+	plane := NewPlane("Boeing 747", 10, 6)
 	// plane.ManualAssign(3, 4, 2)
 	// plane.ManualAssign(29, 4, 4)
 	// plane.ManualAssign(4, 3, 7)
@@ -40,8 +39,9 @@ func main() {
 	// plane.ManualAssign(30, 6, 9)
 	// plane.ManualAssign(1, 1, 33)
 
-	plane.ManualAssign(1, 1, 30)
-	plane.ManualAssign(1, 6, 30)
+	// plane.ManualAssign(1, 2, 30)
+	// plane.ManualAssign(1, 1, 30)
+	// plane.ManualAssign(1, 4, 30)
 
 	plane.Print()
 	plane.IsBalanced()
@@ -120,15 +120,18 @@ func (p *Plane) IsBalanced() bool {
 				}
 			}
 
-			xCoordinate := seat.Weight*xDirection + math.Abs(float64(planeWidthCenter-j))*xDirection
-			yCoordinate := seat.Weight*yDirection + math.Abs(float64(planeLengthCenter-i))*yDirection
+			seatXPos := float64(j%planeWidthCenter + (planeWidthCenter - (j / planeWidthCenter)))
+			seatYPos := float64((i / planeLengthCenter) + i%planeLengthCenter)
+
+			xCoordinate := xDirection * (seat.Weight + seatXPos)
+			yCoordinate := yDirection * (seat.Weight + seatYPos)
 			vectors = append(vectors, [2]float64{xCoordinate, yCoordinate})
+			fmt.Printf("(%f,%f)\n", xCoordinate, yCoordinate)
 		}
 	}
 
 	// vector := math.GetVector(vectors)
-	spew.Dump(vectors[0], vectors[5])
-	spew.Dump(calc.GetVector([][2]float64{vectors[0], vectors[5]}))
+	spew.Dump(calc.GetVector(vectors))
 	spew.Dump(calc.CalculateMeanDirection(vectors))
 
 	return calc.CalculateMeanDirection(vectors) > 30
