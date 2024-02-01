@@ -2,7 +2,7 @@ package calc
 
 import "math"
 
-func getCenterOffset(size int, point int) int {
+func GetCenterOffset(size int, point int) int {
 	if point > size {
 		return -1
 	}
