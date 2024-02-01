@@ -120,11 +120,11 @@ func (p *Plane) IsBalanced() bool {
 				}
 			}
 
-			seatXPos := float64(j%planeWidthCenter + (planeWidthCenter - (j / planeWidthCenter)))
-			seatYPos := float64((i / planeLengthCenter) + i%planeLengthCenter)
+			seatOffsetX := calc.GetCenterOffset(len(p.Seats[i]), j)
+			seatOffsetY := calc.GetCenterOffset(len(p.Seats), i)
 
-			xCoordinate := xDirection * (seat.Weight + seatXPos)
-			yCoordinate := yDirection * (seat.Weight + seatYPos)
+			xCoordinate := xDirection * (seat.Weight + float64(seatOffsetX))
+			yCoordinate := yDirection * (seat.Weight + float64(seatOffsetY))
 			vectors = append(vectors, [2]float64{xCoordinate, yCoordinate})
 			fmt.Printf("(%f,%f)\n", xCoordinate, yCoordinate)
 		}
