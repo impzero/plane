@@ -13,7 +13,7 @@ func TestClamp(t *testing.T) {
 		args args
 		want float64
 	}{
-		{name: "should clamp up", args: args{x: 3, min: 1, max: 2}, want: 3},
+		{name: "should clamp up", args: args{x: 3, min: 1, max: 2}, want: 2},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
