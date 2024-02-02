@@ -21,6 +21,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 
@@ -39,12 +40,15 @@ func main() {
 	// plane.ManualAssign(30, 6, 9)
 	// plane.ManualAssign(1, 1, 33)
 
-	// plane.ManualAssign(1, 2, 30)
-	// plane.ManualAssign(1, 1, 30)
-	// plane.ManualAssign(1, 4, 30)
+	plane.ManualAssign(1, 1, 5)
+	plane.ManualAssign(1, 6, 5)
+	// plane.ManualAssign(10, 1, 5)
+	// plane.ManualAssign(10, 6, 5)
+	// plane.ManualAssign(10, 5, 30)
 
 	plane.Print()
-	plane.IsBalanced()
+	spew.Dump(plane.CalculateBalanceVector())
+	spew.Dump(plane.IsBalanced())
 }
 
 type Plane struct {
@@ -81,41 +85,40 @@ func NewPlane(name string, rows, columns int) Plane {
 		}
 	}
 
-	plane.yBalanceTolerance = 0.10 // 10% bias for length
-	plane.xBalanceTolerance = 0.05 // 5% bias for width - since planes are usually lengthier
+	plane.yBalanceTolerance = float64(rows / 2)
+	plane.xBalanceTolerance = float64(columns / 2)
 	return plane
 }
 
-func (p *Plane) IsBalanced() bool {
-	// two dimensional center of gravity
-	// this means we need to check not only left and right weights on the Y axis but also the X axis
-	// y axis in this case are the rows and x axis are the columns
-	planeLengthCenter := (len(p.Seats) / 2)
-	planeWidthCenter := (len(p.Seats[0]) / 2)
+// IsBalanced checks for balance on the plane using the Lever's Law (f1*l1 = f2*l2)
+
+func (p *Plane) CalculateBalanceVector() [2]float64 {
+	length := (len(p.Seats) / 2)
+	width := (len(p.Seats[0]) / 2)
 
 	var vectors [][2]float64 = make([][2]float64, 0)
 	for i, row := range p.Seats {
 		for j, seat := range row {
 			yDirection := -1.0
-			if i < planeLengthCenter {
+			if i < length {
 				yDirection = 1
 			}
 
 			// if plane has even number of rows there are TWO rows, considered center
-			if planeLengthCenter%2 == 1 {
-				if i == planeLengthCenter || i+1 == planeLengthCenter {
+			if length%2 == 1 {
+				if i == length || i+1 == length {
 					yDirection = 0
 				}
 			}
 
 			xDirection := 1.0
-			if j < planeWidthCenter {
+			if j < width {
 				xDirection = -1
 			}
 
 			// if plane has even number of seats per row there are TWO seats, considered center
-			if planeWidthCenter%2 == 1 {
-				if j == planeWidthCenter || j+1 == planeWidthCenter {
+			if width%2 == 1 {
+				if j == width || j+1 == width {
 					xDirection = 0
 				}
 			}
@@ -123,18 +126,31 @@ func (p *Plane) IsBalanced() bool {
 			seatOffsetX := calc.GetCenterOffset(len(p.Seats[i]), j)
 			seatOffsetY := calc.GetCenterOffset(len(p.Seats), i)
 
-			xCoordinate := xDirection * (seat.Weight + float64(seatOffsetX))
-			yCoordinate := yDirection * (seat.Weight + float64(seatOffsetY))
+			xCoordinate := xDirection * (seat.Weight * float64(seatOffsetX))
+			yCoordinate := yDirection * (seat.Weight * float64(seatOffsetY))
+
 			vectors = append(vectors, [2]float64{xCoordinate, yCoordinate})
-			fmt.Printf("(%f,%f)\n", xCoordinate, yCoordinate)
 		}
 	}
 
-	// vector := math.GetVector(vectors)
-	spew.Dump(calc.GetVector(vectors))
-	spew.Dump(calc.CalculateMeanDirection(vectors))
+	return calc.GetVector(vectors)
+}
 
-	return calc.CalculateMeanDirection(vectors) > 30
+func (p *Plane) IsBalanced() bool {
+	point := p.CalculateBalanceVector()
+	x := point[0]
+	y := point[0]
+
+	width := float64(len(p.Seats[0])) / 2.0
+	length := float64(len(p.Seats)) / 2.0
+
+	if math.Abs(x/width) > p.xBalanceTolerance {
+		return false
+	}
+	if math.Abs(y/length) > p.yBalanceTolerance {
+		return false
+	}
+	return true
 }
 
 func (p *Plane) ManualAssign(rowVal, columnVal int, weight float64) (Seat, error) {
