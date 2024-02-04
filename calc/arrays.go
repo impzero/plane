@@ -2,7 +2,7 @@ package calc
 
 import "math"
 
-func GetCenterOffset(arraySize int, arrayPoint int) int {
+func CenterOffset(arraySize int, arrayPoint int) int {
 	if arrayPoint > arraySize {
 		return -1
 	}

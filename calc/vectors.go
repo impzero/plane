@@ -2,7 +2,7 @@ package calc
 
 import "math"
 
-func CalculateMeanDirection(vectors [][2]float64) float64 {
+func MeanDirection(vectors [][2]float64) float64 {
 	sumX := 0.0
 	sumY := 0.0
 	for _, vector := range vectors {
@@ -19,7 +19,7 @@ func CalculateMeanDirection(vectors [][2]float64) float64 {
 	return meanDirectionDegrees
 }
 
-func GetVector(vectors [][2]float64) [2]float64 {
+func Vector(vectors [][2]float64) [2]float64 {
 	sumX := 0.0
 	sumY := 0.0
 

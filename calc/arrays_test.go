@@ -22,7 +22,7 @@ func Test_getCenterOffset(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GetCenterOffset(tt.args.size, tt.args.i); got != tt.want {
+			if got := CenterOffset(tt.args.size, tt.args.i); got != tt.want {
 				t.Errorf("getCenterOffset() = %v, want %v", got, tt.want)
 			}
 		})

@@ -22,7 +22,7 @@ func TestCalculateMeanDirection(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CalculateMeanDirection(tt.args.vectors); got != tt.want {
+			if got := MeanDirection(tt.args.vectors); got != tt.want {
 				t.Errorf("CalculateMeanDirection() = %v, want %v", got, tt.want)
 			}
 		})
@@ -46,7 +46,7 @@ func TestGetVector(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GetVector(tt.args.vectors); !reflect.DeepEqual(got, tt.want) {
+			if got := Vector(tt.args.vectors); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetVector() = %v, want %v", got, tt.want)
 			}
 		})

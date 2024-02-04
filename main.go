@@ -19,7 +19,7 @@ func main() {
 
 	plane.Print()
 	spew.Dump(plane.CalculateBalanceVector())
-	spew.Dump(plane.IsBalanced())
+	spew.Dump(plane.Balanced())
 }
 
 type Plane struct {
@@ -86,18 +86,18 @@ func (p *Plane) CalculateBalanceVector() [2]float64 {
 					xDirection = 0
 				}
 			}
-			seatOffsetX := calc.GetCenterOffset(len(p.Seats[i]), j)
-			seatOffsetY := calc.GetCenterOffset(len(p.Seats), i)
+			seatOffsetX := calc.CenterOffset(len(p.Seats[i]), j)
+			seatOffsetY := calc.CenterOffset(len(p.Seats), i)
 			xCoordinate := xDirection * (seat.Weight * float64(seatOffsetX))
 			yCoordinate := yDirection * (seat.Weight * float64(seatOffsetY))
 
 			vectors = append(vectors, [2]float64{xCoordinate, yCoordinate})
 		}
 	}
-	return calc.GetVector(vectors)
+	return calc.Vector(vectors)
 }
 
-func (p *Plane) IsBalanced() bool {
+func (p *Plane) Balanced() bool {
 	point := p.CalculateBalanceVector()
 	x := point[0]
 	y := point[0]
